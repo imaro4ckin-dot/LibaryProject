@@ -25,8 +25,10 @@
             <Tab text="Available Books">
                 <TableView fx:id="availableTable">
                     <columns>
-                        <TableColumn fx:id="availTitleColumn"  text="Title"  prefWidth="280"/>
-                        <TableColumn fx:id="availAuthorColumn" text="Author" prefWidth="200"/>
+                        <TableColumn fx:id="availTitleColumn"    text="Title"    prefWidth="220"/>
+                        <TableColumn fx:id="availAuthorColumn"   text="Author"   prefWidth="160"/>
+                        <TableColumn fx:id="availIsbnColumn"     text="ISBN"     prefWidth="110"/>
+                        <TableColumn fx:id="availCategoryColumn" text="Category" prefWidth="100"/>
                     </columns>
                 </TableView>
             </Tab>
@@ -35,8 +37,8 @@
             <Tab text="My Books">
                 <TableView fx:id="myBooksTable">
                     <columns>
-                        <TableColumn fx:id="myTitleColumn"   text="Title"    prefWidth="230"/>
-                        <TableColumn fx:id="myAuthorColumn"  text="Author"   prefWidth="160"/>
+                        <TableColumn fx:id="myTitleColumn"   text="Title"    prefWidth="260"/>
+                        <TableColumn fx:id="myAuthorColumn"  text="Author"   prefWidth="180"/>
                         <TableColumn fx:id="myDueDateColumn" text="Due Date" prefWidth="100"/>
                         <TableColumn fx:id="myStatusColumn"  text="Status"   prefWidth="90"/>
                     </columns>

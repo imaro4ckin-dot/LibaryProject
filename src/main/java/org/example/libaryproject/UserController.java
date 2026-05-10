@@ -3,6 +3,7 @@ package org.example.libaryproject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -30,10 +31,14 @@ import java.util.Set;
 
 public class UserController {
 
+    private static final int MAX_BOOKS = 5;
+
     // Available tab
     @FXML private TableView<Book>           availableTable;
     @FXML private TableColumn<Book, String> availTitleColumn;
     @FXML private TableColumn<Book, String> availAuthorColumn;
+    @FXML private TableColumn<Book, String> availIsbnColumn;
+    @FXML private TableColumn<Book, String> availCategoryColumn;
 
     // My Books tab
     @FXML private TableView<Book>           myBooksTable;
@@ -48,7 +53,6 @@ public class UserController {
 
     private final ObservableList<Book> availableBooks = FXCollections.observableArrayList();
     private final ObservableList<Book> myBooks        = FXCollections.observableArrayList();
-    private FilteredList<Book> filteredAvailable;
 
     private final ApiClient db = new ApiClient();
     private User currentUser;
@@ -65,6 +69,8 @@ public class UserController {
         // Available tab columns
         availTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         availAuthorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
+        availIsbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        availCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         availableTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // My Books tab columns
@@ -81,27 +87,48 @@ public class UserController {
         });
         myBooksTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Red row tint for overdue books in My Books tab
+        // 3-colour row factory for My Books: red=overdue, yellow=due within 3 days
         myBooksTable.setRowFactory(tv -> new TableRow<>() {
             @Override protected void updateItem(Book book, boolean empty) {
                 super.updateItem(book, empty);
-                setStyle((!empty && book != null && isOverdue(book))
-                        ? "-fx-background-color: #fff0f0;" : "");
+                if (empty || book == null) {
+                    setStyle("");
+                } else if (isOverdue(book)) {
+                    setStyle("-fx-background-color: #fff0f0;");
+                } else if (isDueSoon(book)) {
+                    setStyle("-fx-background-color: #fffde7;");
+                } else {
+                    setStyle("");
+                }
             }
         });
 
-        // Live search filters only the Available tab
-        filteredAvailable = new FilteredList<>(availableBooks, b -> true);
+        // Search filters both tabs using the same search field
+        FilteredList<Book> filteredAvailable = new FilteredList<>(availableBooks, b -> true);
+        FilteredList<Book> filteredMyBooks   = new FilteredList<>(myBooks, b -> true);
+
         searchField.textProperty().addListener((obs, old, q) -> {
             String lower = q.toLowerCase();
             filteredAvailable.setPredicate(b ->
                     q.isEmpty() ||
                     b.getTitle().toLowerCase().contains(lower) ||
+                    b.getAuthor().toLowerCase().contains(lower) ||
+                    b.getIsbn().toLowerCase().contains(lower) ||
+                    b.getCategory().toLowerCase().contains(lower));
+            filteredMyBooks.setPredicate(b ->
+                    q.isEmpty() ||
+                    b.getTitle().toLowerCase().contains(lower) ||
                     b.getAuthor().toLowerCase().contains(lower));
         });
 
-        availableTable.setItems(filteredAvailable);
-        myBooksTable.setItems(myBooks);
+        // Wrap in SortedList so clicking column headers sorts the table
+        SortedList<Book> sortedAvailable = new SortedList<>(filteredAvailable);
+        SortedList<Book> sortedMyBooks   = new SortedList<>(filteredMyBooks);
+        sortedAvailable.comparatorProperty().bind(availableTable.comparatorProperty());
+        sortedMyBooks.comparatorProperty().bind(myBooksTable.comparatorProperty());
+
+        availableTable.setItems(sortedAvailable);
+        myBooksTable.setItems(sortedMyBooks);
     }
 
     private boolean isOverdue(Book book) {
@@ -110,29 +137,39 @@ public class UserController {
         catch (Exception e) { return false; }
     }
 
+    private boolean isDueSoon(Book book) {
+        if (book.getDueDate() == null || book.getDueDate().isEmpty()) return false;
+        try {
+            LocalDate due = LocalDate.parse(book.getDueDate());
+            LocalDate now = LocalDate.now();
+            return !due.isBefore(now) && due.isBefore(now.plusDays(4));
+        } catch (Exception e) { return false; }
+    }
+
     private void refresh() {
         myCheckoutIds = new HashSet<>(db.getCheckedOutBookIds(currentUser.getId()));
-
-        // Available: only books that are not checked out by anyone
         availableBooks.setAll(db.loadBooks().stream()
                 .filter(Book::getAvailable)
                 .toList());
-
-        // My Books: only books checked out by this user
         myBooks.setAll(db.getBooksCheckedOutByUser(currentUser.getId()));
     }
 
     @FXML
     public void handleCheckout() {
-        // Only works on the Available tab
         Book selected = availableTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
+
+        if (myBooks.size() >= MAX_BOOKS) {
+            new Alert(Alert.AlertType.WARNING,
+                    "You have reached the checkout limit of " + MAX_BOOKS + " books.\nPlease return a book before checking out another.",
+                    ButtonType.OK).showAndWait();
+            return;
+        }
 
         OptionalInt days = askLoanDuration();
         if (days.isPresent()) {
             db.checkoutBook(selected.getId(), currentUser.getId(), days.getAsInt());
             refresh();
-            // Switch to My Books tab so the user sees their new book
             tabPane.getSelectionModel().select(1);
         }
     }
@@ -165,7 +202,6 @@ public class UserController {
 
     @FXML
     public void handleReturn() {
-        // Only works on the My Books tab
         Book selected = myBooksTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
 

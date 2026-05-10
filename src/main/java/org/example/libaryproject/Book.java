@@ -5,7 +5,9 @@ public class Book {
     private String title;
     private String author;
     private boolean isAvaliable;
-    private String dueDate; // null if available, ISO date string if checked out
+    private String dueDate;
+    private String isbn     = "";
+    private String category = "";
 
     public Book(int id, String title, String author, boolean isAvaliable) {
         this.id = id;
@@ -33,4 +35,10 @@ public class Book {
 
     public String getDueDate()              { return dueDate; }
     public void setDueDate(String dueDate)  { this.dueDate = dueDate; }
+
+    public String getIsbn()                 { return isbn == null ? "" : isbn; }
+    public void setIsbn(String isbn)        { this.isbn = isbn == null ? "" : isbn; }
+
+    public String getCategory()             { return category == null ? "" : category; }
+    public void setCategory(String cat)     { this.category = cat == null ? "" : cat; }
 }

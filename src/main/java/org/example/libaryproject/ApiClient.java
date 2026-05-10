@@ -127,7 +127,11 @@ public class ApiClient {
 
     public int addBook(Book book) {
         try {
-            String body = json.writeValueAsString(Map.of("title", book.getTitle(), "author", book.getAuthor()));
+            String body = json.writeValueAsString(Map.of(
+                    "title",    book.getTitle(),
+                    "author",   book.getAuthor(),
+                    "isbn",     book.getIsbn(),
+                    "category", book.getCategory()));
             HttpResponse<String> resp = post("/api/books", body);
             Map<String, Object> m = json.readValue(resp.body(), new TypeReference<>() {});
             return (int) m.get("id");
@@ -137,9 +141,13 @@ public class ApiClient {
         }
     }
 
-    public boolean updateBook(int id, String title, String author) {
+    public boolean updateBook(int id, String title, String author, String isbn, String category) {
         try {
-            String body = json.writeValueAsString(Map.of("title", title, "author", author));
+            String body = json.writeValueAsString(Map.of(
+                    "title",    title,
+                    "author",   author,
+                    "isbn",     isbn == null ? "" : isbn,
+                    "category", category == null ? "" : category));
             HttpResponse<String> resp = put("/api/books/" + id, body);
             return resp.statusCode() == 200;
         } catch (Exception e) {
@@ -241,11 +249,28 @@ public class ApiClient {
             return list.stream().map(m -> {
                 Book b = new Book((int) m.get("id"), (String) m.get("title"), (String) m.get("author"), false);
                 b.setDueDate((String) m.get("dueDate"));
+                b.setIsbn((String) m.getOrDefault("isbn", ""));
+                b.setCategory((String) m.getOrDefault("category", ""));
                 return b;
             }).toList();
         } catch (Exception e) {
             System.err.println("Get user books error: " + e.getMessage());
             return Collections.emptyList();
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Stats
+    // -------------------------------------------------------------------------
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getAdminStats() {
+        try {
+            HttpResponse<String> resp = get("/api/stats");
+            return json.readValue(resp.body(), new TypeReference<>() {});
+        } catch (Exception e) {
+            System.err.println("Get stats error: " + e.getMessage());
+            return Map.of("totalBooks", 0, "checkedOut", 0, "overdue", 0);
         }
     }
 
@@ -387,6 +412,8 @@ public class ApiClient {
                 (boolean) m.get("available")
         );
         b.setDueDate((String) m.getOrDefault("dueDate", ""));
+        b.setIsbn((String) m.getOrDefault("isbn", ""));
+        b.setCategory((String) m.getOrDefault("category", ""));
         return b;
     }
 

@@ -33,7 +33,14 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText();
 
-        User user = db.login(username, password);
+        User user;
+        try {
+            user = db.login(username, password);
+        } catch (Exception e) {
+            messageLabel.setStyle("-fx-text-fill: #c0392b;");
+            messageLabel.setText("Cannot connect to server. Make sure LibraryServer is running.");
+            return;
+        }
 
         if (user == null) {
             messageLabel.setStyle("-fx-text-fill: #c0392b;");

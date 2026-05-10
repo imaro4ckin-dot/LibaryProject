@@ -8,25 +8,40 @@
             stylesheets="@styles.css">
     <top>
         <VBox>
-            <!-- Row 1: add book + search + actions -->
+            <!-- Row 1: dashboard stats -->
+            <HBox spacing="24" alignment="CENTER_LEFT" style="-fx-background-color:#f5f5f5; -fx-border-color:transparent transparent #e0e0e0 transparent; -fx-border-width:0 0 1 0;">
+                <padding><Insets top="8" right="16" bottom="8" left="16"/></padding>
+                <Label text="Total Books" style="-fx-text-fill:#888; -fx-font-size:11px;"/>
+                <Label fx:id="totalLabel" text="—" style="-fx-font-weight:bold; -fx-font-size:14px;"/>
+                <Label text="  Checked Out" style="-fx-text-fill:#888; -fx-font-size:11px;"/>
+                <Label fx:id="checkedOutLabel" text="—" style="-fx-font-weight:bold; -fx-font-size:14px;"/>
+                <Label text="  Overdue" style="-fx-text-fill:#c0392b; -fx-font-size:11px;"/>
+                <Label fx:id="overdueLabel" text="—" style="-fx-font-weight:bold; -fx-font-size:14px; -fx-text-fill:#c0392b;"/>
+            </HBox>
+            <!-- Row 2: add book + search + actions -->
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <padding><Insets top="12" right="16" bottom="8" left="16"/></padding>
-                <TextField fx:id="titleInput"  promptText="Book Title"/>
-                <TextField fx:id="authorInput" promptText="Author"/>
+                <TextField fx:id="titleInput"  promptText="Book Title"  prefWidth="140"/>
+                <TextField fx:id="authorInput" promptText="Author"      prefWidth="120"/>
+                <TextField fx:id="isbnInput"   promptText="ISBN"        prefWidth="100"/>
+                <ChoiceBox fx:id="categoryInput" prefWidth="110"/>
                 <Button text="Add Book" onAction="#handleAddBook"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <TextField fx:id="searchField" promptText="Search..." prefWidth="160"/>
+                <TextField fx:id="searchField"    promptText="Search..."  prefWidth="130"/>
+                <ChoiceBox fx:id="categoryFilter" prefWidth="110"/>
                 <Label fx:id="userLabel" styleClass="role-badge"/>
                 <Button text="History"      onAction="#handleHistory"     styleClass="logout-button"/>
                 <Button text="Manage Users" onAction="#handleManageUsers" styleClass="logout-button"/>
                 <Button text="Logout"       onAction="#handleLogout"      styleClass="logout-button"/>
             </HBox>
-            <!-- Row 2: edit selected book -->
+            <!-- Row 3: edit selected book -->
             <HBox fx:id="editBar" spacing="10" alignment="CENTER_LEFT" visible="false" managed="false">
                 <padding><Insets top="0" right="16" bottom="10" left="16"/></padding>
                 <Label text="Edit:" style="-fx-text-fill:#888; -fx-font-size:12px;"/>
-                <TextField fx:id="editTitleField"  promptText="Title"  prefWidth="180"/>
-                <TextField fx:id="editAuthorField" promptText="Author" prefWidth="150"/>
+                <TextField fx:id="editTitleField"  promptText="Title"  prefWidth="140"/>
+                <TextField fx:id="editAuthorField" promptText="Author" prefWidth="120"/>
+                <TextField fx:id="editIsbnField"   promptText="ISBN"   prefWidth="100"/>
+                <ChoiceBox fx:id="editCategoryField" prefWidth="110"/>
                 <Button text="Save Changes" onAction="#handleEditSave"/>
                 <Button text="Cancel"       onAction="#handleEditCancel" styleClass="logout-button"/>
             </HBox>
@@ -36,11 +51,13 @@
     <center>
         <TableView fx:id="bookTable">
             <columns>
-                <TableColumn fx:id="titleColumn"      text="Title"          prefWidth="160"/>
-                <TableColumn fx:id="authorColumn"     text="Author"         prefWidth="130"/>
-                <TableColumn fx:id="statusColumn"     text="Status"         prefWidth="90"/>
-                <TableColumn fx:id="dueDateColumn"    text="Due Date"       prefWidth="90"/>
-                <TableColumn fx:id="checkedOutColumn" text="Checked Out By" prefWidth="120"/>
+                <TableColumn fx:id="titleColumn"      text="Title"          prefWidth="150"/>
+                <TableColumn fx:id="authorColumn"     text="Author"         prefWidth="120"/>
+                <TableColumn fx:id="isbnColumn"       text="ISBN"           prefWidth="100"/>
+                <TableColumn fx:id="categoryColumn"   text="Category"       prefWidth="90"/>
+                <TableColumn fx:id="statusColumn"     text="Status"         prefWidth="80"/>
+                <TableColumn fx:id="dueDateColumn"    text="Due Date"       prefWidth="85"/>
+                <TableColumn fx:id="checkedOutColumn" text="Checked Out By" prefWidth="110"/>
             </columns>
         </TableView>
     </center>

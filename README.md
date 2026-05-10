@@ -1,52 +1,33 @@
-# Library Management System
+# Library Client
 
-A two-part application: a **Spring Boot REST server** that holds all data, and a **JavaFX desktop client** that connects to it. Multiple laptops can run the client simultaneously and stay in sync because they all talk to the same server.
-
-```
-LibraryServer/   ← Spring Boot (runs on one machine, port 8080)
-LibaryProject/   ← JavaFX desktop app (runs on any number of machines)
-```
+JavaFX desktop app for the Library Management System. Connects to the [Library Server](https://github.com/YOUR_USERNAME/LibraryServer) over HTTP — multiple laptops can run this client simultaneously and stay in sync.
 
 ## Requirements
 
 - Java 21+
-- No other installation needed — Maven downloads all dependencies automatically
+- [LibraryServer](https://github.com/YOUR_USERNAME/LibraryServer) running (on the same machine or your local network)
 
----
+## Setup
 
-## 1 — Start the server (run once, on one machine)
+**1. Start the server first** (see the [LibraryServer](https://github.com/YOUR_USERNAME/LibraryServer) repo).
+
+**2. If the server is on a different machine**, open `src/main/java/org/example/libaryproject/ApiClient.java` and update the first line of the class:
+
+```java
+private static final String BASE_URL = "http://192.168.1.10:8080"; // ← server's IP
+```
+
+**3. Run the client:**
 
 ```bash
-cd LibraryServer
-./mvnw spring-boot:run
-```
-
-The server starts on **http://localhost:8080** and creates `library.db` in that folder on first run.
-
-To let other laptops connect, find the server machine's local IP address (e.g. `192.168.1.10`) and update **one line** in the client before building it:
-
-```
-LibaryProject/src/main/java/org/example/libaryproject/ApiClient.java
-  → private static final String BASE_URL = "http://192.168.1.10:8080";
-```
-
----
-
-## 2 — Start the client (any number of laptops)
-
-**Mac / Linux**
-```bash
-cd LibaryProject
+# Mac / Linux
 ./mvnw javafx:run
-```
 
-**Windows**
-```cmd
-cd LibaryProject
+# Windows
 mvnw.cmd javafx:run
 ```
 
----
+No installation needed — Maven downloads all dependencies automatically.
 
 ## Default accounts
 
@@ -57,21 +38,20 @@ mvnw.cmd javafx:run
 
 New accounts can be created by an admin from the **Manage Users** screen.
 
----
-
 ## Features
 
-**Admin**
-- Add, edit, delete books
-- Checkout and force-return books
+### Admin
+- Add, edit, and delete books (with ISBN and category)
+- Filter books by category; search by title, author, or ISBN
+- Checkout and force-return books on behalf of users
+- Dashboard showing total books, currently checked out, and overdue count
 - Full checkout history with CSV export
-- Manage users (create, delete, view checked-out books)
+- Manage users: create, delete, view their checked-out books
 
-**User**
-- Browse available books and check them out (choose loan duration)
-- View and return your own books
-- Overdue books highlighted in red
-
-**Both roles**
-- Change password
-- Forgot password via security question
+### User
+- Browse available books — searchable by title, author, ISBN, or category
+- Check out a book and choose the loan duration (1–4 weeks)
+- View your checked-out books; return them when done
+- Books due within 3 days are highlighted yellow; overdue books are highlighted red
+- Maximum 5 books checked out at once
+- Change password / reset password via security question

@@ -3,6 +3,7 @@ package org.example.libaryproject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,26 +26,44 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
 public class AdminController {
 
-    @FXML private TextField titleInput;
-    @FXML private TextField authorInput;
-    @FXML private TextField searchField;
-    @FXML private TextField editTitleField;
-    @FXML private TextField editAuthorField;
-    @FXML private HBox      editBar;
+    static final List<String> CATEGORIES = List.of(
+            "All", "Fiction", "Non-Fiction", "Science", "History",
+            "Biography", "Children", "Technology", "Art", "Philosophy",
+            "Psychology", "Travel", "Other");
+
+    @FXML private TextField   titleInput;
+    @FXML private TextField   authorInput;
+    @FXML private TextField   isbnInput;
+    @FXML private ChoiceBox<String> categoryInput;
+    @FXML private TextField   searchField;
+    @FXML private ChoiceBox<String> categoryFilter;
+    @FXML private TextField   editTitleField;
+    @FXML private TextField   editAuthorField;
+    @FXML private TextField   editIsbnField;
+    @FXML private ChoiceBox<String> editCategoryField;
+    @FXML private HBox        editBar;
 
     @FXML private TableView<Book>            bookTable;
     @FXML private TableColumn<Book, String>  titleColumn;
     @FXML private TableColumn<Book, String>  authorColumn;
+    @FXML private TableColumn<Book, String>  isbnColumn;
+    @FXML private TableColumn<Book, String>  categoryColumn;
     @FXML private TableColumn<Book, Void>    statusColumn;
     @FXML private TableColumn<Book, String>  dueDateColumn;
     @FXML private TableColumn<Book, Void>    checkedOutColumn;
     @FXML private Label userLabel;
+
+    // Dashboard stat labels
+    @FXML private Label totalLabel;
+    @FXML private Label checkedOutLabel;
+    @FXML private Label overdueLabel;
 
     private final ObservableList<Book> allBooks = FXCollections.observableArrayList();
     private FilteredList<Book> filteredBooks;
@@ -62,9 +81,10 @@ public class AdminController {
     public void initialize() {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
+        isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
         dueDateColumn.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 
-        // Status column: "Available" or "Checked Out"
         statusColumn.setCellFactory(col -> new TableCell<>() {
             @Override protected void updateItem(Void v, boolean empty) {
                 super.updateItem(v, empty);
@@ -74,7 +94,6 @@ public class AdminController {
             }
         });
 
-        // Checked Out By column
         checkedOutColumn.setCellFactory(col -> new TableCell<>() {
             @Override protected void updateItem(Void v, boolean empty) {
                 super.updateItem(v, empty);
@@ -84,7 +103,7 @@ public class AdminController {
             }
         });
 
-        // Row factory: red tint for overdue books
+        // 3-colour row factory: red=overdue, yellow=due soon
         bookTable.setRowFactory(tv -> new TableRow<>() {
             @Override protected void updateItem(Book book, boolean empty) {
                 super.updateItem(book, empty);
@@ -92,6 +111,8 @@ public class AdminController {
                     setStyle("");
                 } else if (isOverdue(book)) {
                     setStyle("-fx-background-color: #fff0f0;");
+                } else if (isDueSoon(book)) {
+                    setStyle("-fx-background-color: #fffde7;");
                 } else {
                     setStyle("");
                 }
@@ -100,21 +121,55 @@ public class AdminController {
 
         bookTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
+        // Category dropdowns for add/edit
+        ObservableList<String> cats = FXCollections.observableArrayList(
+                CATEGORIES.subList(1, CATEGORIES.size())); // no "All" in add/edit
+        categoryInput.setItems(cats);
+        categoryInput.setValue("Other");
+        editCategoryField.setItems(cats);
+        editCategoryField.setValue("Other");
+
+        // Category filter (includes "All")
+        categoryFilter.setItems(FXCollections.observableArrayList(CATEGORIES));
+        categoryFilter.setValue("All");
+
         filteredBooks = new FilteredList<>(allBooks, b -> true);
-        searchField.textProperty().addListener((obs, old, q) -> {
-            String lower = q.toLowerCase();
-            filteredBooks.setPredicate(b ->
-                    q.isEmpty() ||
-                    b.getTitle().toLowerCase().contains(lower) ||
-                    b.getAuthor().toLowerCase().contains(lower));
-        });
-        bookTable.setItems(filteredBooks);
+
+        // Combined search + category filter predicate
+        Runnable updatePredicate = () -> {
+            String q   = searchField.getText().toLowerCase();
+            String cat = categoryFilter.getValue();
+            filteredBooks.setPredicate(b -> {
+                boolean matchesSearch = q.isEmpty()
+                        || b.getTitle().toLowerCase().contains(q)
+                        || b.getAuthor().toLowerCase().contains(q)
+                        || b.getIsbn().toLowerCase().contains(q)
+                        || b.getCategory().toLowerCase().contains(q);
+                boolean matchesCat = "All".equals(cat) || cat.equals(b.getCategory());
+                return matchesSearch && matchesCat;
+            });
+        };
+        searchField.textProperty().addListener((obs, o, n) -> updatePredicate.run());
+        categoryFilter.valueProperty().addListener((obs, o, n) -> updatePredicate.run());
+
+        // Wrap in SortedList for sortable columns
+        SortedList<Book> sortedBooks = new SortedList<>(filteredBooks);
+        sortedBooks.comparatorProperty().bind(bookTable.comparatorProperty());
+        bookTable.setItems(sortedBooks);
     }
 
     private boolean isOverdue(Book book) {
         if (book.getAvailable() || book.getDueDate() == null || book.getDueDate().isEmpty()) return false;
+        try { return LocalDate.parse(book.getDueDate()).isBefore(LocalDate.now()); }
+        catch (Exception e) { return false; }
+    }
+
+    private boolean isDueSoon(Book book) {
+        if (book.getAvailable() || book.getDueDate() == null || book.getDueDate().isEmpty()) return false;
         try {
-            return LocalDate.parse(book.getDueDate()).isBefore(LocalDate.now());
+            LocalDate due = LocalDate.parse(book.getDueDate());
+            LocalDate now = LocalDate.now();
+            return !due.isBefore(now) && due.isBefore(now.plusDays(4));
         } catch (Exception e) { return false; }
     }
 
@@ -122,17 +177,31 @@ public class AdminController {
         activeCheckouts = db.loadActiveCheckouts();
         allBooks.setAll(db.loadBooks());
         bookTable.refresh();
+
+        // Update dashboard stats
+        Map<String, Object> stats = db.getAdminStats();
+        if (totalLabel != null) {
+            totalLabel.setText(String.valueOf(stats.getOrDefault("totalBooks", 0)));
+            checkedOutLabel.setText(String.valueOf(stats.getOrDefault("checkedOut", 0)));
+            overdueLabel.setText(String.valueOf(stats.getOrDefault("overdue", 0)));
+        }
     }
 
     @FXML
     public void handleAddBook() {
-        String title  = titleInput.getText().trim();
-        String author = authorInput.getText().trim();
+        String title    = titleInput.getText().trim();
+        String author   = authorInput.getText().trim();
+        String isbn     = isbnInput.getText().trim();
+        String category = categoryInput.getValue();
         if (!title.isEmpty() && !author.isEmpty()) {
             Book book = new Book(title, author);
+            book.setIsbn(isbn);
+            book.setCategory(category == null ? "Other" : category);
             book.setId(db.addBook(book));
             titleInput.clear();
             authorInput.clear();
+            isbnInput.clear();
+            categoryInput.setValue("Other");
             refresh();
         }
     }
@@ -148,7 +217,6 @@ public class AdminController {
         }
     }
 
-    /** Shows a dialog letting the user pick a loan duration. Returns empty if cancelled. */
     private OptionalInt askLoanDuration() {
         ChoiceBox<String> choice = new ChoiceBox<>();
         choice.getItems().addAll("1 week (7 days)", "2 weeks (14 days)", "3 weeks (21 days)", "1 month (30 days)");
@@ -167,10 +235,10 @@ public class AdminController {
         if (result.isEmpty() || result.get() != ButtonType.OK) return OptionalInt.empty();
 
         int days = switch (choice.getValue()) {
-            case "1 week (7 days)"    -> 7;
-            case "3 weeks (21 days)"  -> 21;
-            case "1 month (30 days)"  -> 30;
-            default                   -> 14;
+            case "1 week (7 days)"   -> 7;
+            case "3 weeks (21 days)" -> 21;
+            case "1 month (30 days)" -> 30;
+            default                  -> 14;
         };
         return OptionalInt.of(days);
     }
@@ -180,8 +248,7 @@ public class AdminController {
         Book selected = bookTable.getSelectionModel().getSelectedItem();
         if (selected == null || selected.getAvailable()) return;
         Optional<ButtonType> result = confirm(
-                "Return Book",
-                "Return \"" + selected.getTitle() + "\"?",
+                "Return Book", "Return \"" + selected.getTitle() + "\"?",
                 "This will mark the book as available.");
         if (result.isPresent() && result.get() == ButtonType.OK) {
             db.adminReturnBook(selected.getId());
@@ -194,8 +261,7 @@ public class AdminController {
         Book selected = bookTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
         Optional<ButtonType> result = confirm(
-                "Delete Book",
-                "Delete \"" + selected.getTitle() + "\"?",
+                "Delete Book", "Delete \"" + selected.getTitle() + "\"?",
                 "This action cannot be undone.");
         if (result.isPresent() && result.get() == ButtonType.OK) {
             db.deleteBook(selected);
@@ -203,14 +269,14 @@ public class AdminController {
         }
     }
 
-    // --- Edit book ---
-
     @FXML
     public void handleEditStart() {
         Book selected = bookTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
         editTitleField.setText(selected.getTitle());
         editAuthorField.setText(selected.getAuthor());
+        editIsbnField.setText(selected.getIsbn());
+        editCategoryField.setValue(selected.getCategory().isEmpty() ? "Other" : selected.getCategory());
         editBar.setVisible(true);
         editBar.setManaged(true);
     }
@@ -219,10 +285,12 @@ public class AdminController {
     public void handleEditSave() {
         Book selected = bookTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
-        String title  = editTitleField.getText().trim();
-        String author = editAuthorField.getText().trim();
+        String title    = editTitleField.getText().trim();
+        String author   = editAuthorField.getText().trim();
+        String isbn     = editIsbnField.getText().trim();
+        String category = editCategoryField.getValue();
         if (!title.isEmpty() && !author.isEmpty()) {
-            db.updateBook(selected.getId(), title, author);
+            db.updateBook(selected.getId(), title, author, isbn, category == null ? "Other" : category);
             hideEditBar();
             refresh();
         }
@@ -238,13 +306,13 @@ public class AdminController {
         editBar.setManaged(false);
         editTitleField.clear();
         editAuthorField.clear();
+        editIsbnField.clear();
+        editCategoryField.setValue("Other");
     }
-
-    // --- Modals ---
 
     @FXML
     public void handleHistory() {
-        openModal("history-view.fxml", "Checkout History", 700, 480, null);
+        openModal("history-view.fxml", "Checkout History", 700, 480);
     }
 
     @FXML
@@ -271,9 +339,8 @@ public class AdminController {
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
         File file = chooser.showSaveDialog(bookTable.getScene().getWindow());
         if (file != null) {
-            try {
-                db.exportBooksCSV(file.getAbsolutePath());
-            } catch (Exception e) { e.printStackTrace(); }
+            try { db.exportBooksCSV(file.getAbsolutePath()); }
+            catch (Exception e) { e.printStackTrace(); }
         }
     }
 
@@ -287,7 +354,7 @@ public class AdminController {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    private void openModal(String fxml, String title, double w, double h, Object controller) {
+    private void openModal(String fxml, String title, double w, double h) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Parent root = loader.load();

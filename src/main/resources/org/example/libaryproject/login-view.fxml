@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.libaryproject.LoginController"
+      stylesheets="@styles.css"
+      alignment="CENTER"
+      spacing="16"
+      prefWidth="360"
+      prefHeight="340">
+
+    <padding><Insets top="48" right="48" bottom="48" left="48"/></padding>
+
+    <Label text="Library" styleClass="login-title"/>
+    <Label text="Sign in to continue" styleClass="login-subtitle"/>
+
+    <VBox spacing="10" style="-fx-padding: 16 0 0 0;">
+        <TextField fx:id="usernameField" promptText="Username"/>
+        <PasswordField fx:id="passwordField" promptText="Password"/>
+    </VBox>
+
+    <Label fx:id="errorLabel" styleClass="login-error" text="" wrapText="true"/>
+
+    <Button text="Sign In" onAction="#handleLogin" maxWidth="Infinity" styleClass="login-button"/>
+
+</VBox>

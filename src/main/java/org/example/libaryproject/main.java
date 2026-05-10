@@ -10,12 +10,9 @@ public class main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Load the FXML file
-        Parent root = FXMLLoader.load(getClass().getResource("library-view.fxml"));
-
-        // Set up the window
-        primaryStage.setTitle("Library Management System");
-        primaryStage.setScene(new Scene(root, 600, 400));
+        Parent root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
+        primaryStage.setTitle("Library — Login");
+        primaryStage.setScene(new Scene(root, 360, 340));
         primaryStage.show();
     }
 

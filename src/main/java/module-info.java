@@ -11,6 +11,9 @@ module org.example.libaryproject {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
+    requires java.sql;
+    requires org.xerial.sqlitejdbc;
+
     opens org.example.libaryproject to javafx.fxml;
     exports org.example.libaryproject;
 }

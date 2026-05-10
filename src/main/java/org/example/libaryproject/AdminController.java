@@ -3,12 +3,16 @@ package org.example.libaryproject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
-public class LibraryController {
+public class AdminController {
 
     @FXML private TextField titleInput;
     @FXML private TextField authorInput;
@@ -25,11 +29,8 @@ public class LibraryController {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("available"));
-
         bookTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         bookTable.setItems(bookList);
-
-        db.initDB();
         bookList.addAll(db.loadBooks());
     }
 
@@ -37,12 +38,10 @@ public class LibraryController {
     public void handleAddBook() {
         String title = titleInput.getText().trim();
         String author = authorInput.getText().trim();
-
         if (!title.isEmpty() && !author.isEmpty()) {
-            Book newBook = new Book(title, author);
-            int id = db.addBook(newBook);
-            newBook.setId(id);
-            bookList.add(newBook);
+            Book book = new Book(title, author);
+            book.setId(db.addBook(book));
+            bookList.add(book);
             titleInput.clear();
             authorInput.clear();
         }
@@ -74,6 +73,18 @@ public class LibraryController {
         if (selected != null) {
             db.deleteBook(selected);
             bookList.remove(selected);
+        }
+    }
+
+    @FXML
+    public void handleLogout() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
+            Stage stage = (Stage) bookTable.getScene().getWindow();
+            stage.setScene(new Scene(root, 360, 340));
+            stage.setTitle("Library — Login");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

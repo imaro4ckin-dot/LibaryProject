@@ -50,4 +50,37 @@ public class LibraryController {
             authorInput.clear();
         }
     }
+
+
+    @FXML
+    public void handleCheckout() {
+        // 1. Find out which book the user clicked on
+        Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
+
+        // 2. Make sure they actually selected something AND it's available
+        if (selectedBook != null && selectedBook.getAvailable() == true) {
+            selectedBook.setAvaliable(false);
+            bookTable.refresh(); // Tells the table to redraw the screen
+        }
+    }
+
+    @FXML
+    public void handleReturn() {
+        Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
+
+        // If a book is selected and it is currently checked out (false)
+        if (selectedBook != null && selectedBook.getAvailable() == false) {
+            selectedBook.setAvaliable(true);
+            bookTable.refresh();
+        }
+    }
+
+    @FXML
+    public void handleDelete() {
+        Book selectedBook = bookTable.getSelectionModel().getSelectedItem();
+
+        if (selectedBook != null) {
+            bookList.remove(selectedBook); // Removes it from the list and table instantly
+        }
+    }
 }

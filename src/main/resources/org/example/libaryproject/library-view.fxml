@@ -22,4 +22,14 @@
             </columns>
         </TableView>
     </center>
+
+
+    <bottom>
+        <HBox spacing="15" alignment="CENTER">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <Button text="Checkout Book" onAction="#handleCheckout"/>
+            <Button text="Return Book" onAction="#handleReturn"/>
+            <Button text="Delete Book" onAction="#handleDelete"/>
+        </HBox>
+    </bottom>
 </BorderPane>

@@ -32,9 +32,15 @@ public Book(String title, String author ){
         return isAvaliable;
     }
 
+    public boolean getAvailable(){
+        return isAvaliable;
+    }
+
     public void setAvaliable(boolean avaliable) {
         isAvaliable = avaliable;
     }
+
+
 }
 
 

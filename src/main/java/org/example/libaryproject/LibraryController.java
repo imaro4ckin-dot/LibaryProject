@@ -28,6 +28,8 @@ public class LibraryController {
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("available"));
 
+        bookTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         // Put our list into the table
         bookTable.setItems(bookList);
 

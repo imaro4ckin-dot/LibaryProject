@@ -1,0 +1,240 @@
+/* =====================================================
+   Library App — Minimal Light Theme
+   ===================================================== */
+
+/* --- Root --- */
+.root {
+    -fx-background-color: #fafafa;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #1a1a1a;
+}
+
+/* =====================================================
+   Text Fields
+   ===================================================== */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1a1a1a;
+    -fx-prompt-text-fill: #b0b0b0;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1.5 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 4px 4px 0 0;
+    -fx-padding: 10px 12px;
+    -fx-pref-height: 40px;
+    -fx-min-width: 180px;
+    -fx-background-insets: 0;
+}
+
+.text-field:focused {
+    -fx-border-color: #1a1a1a;
+    -fx-border-width: 0 0 2 0;
+    -fx-background-color: #f5f5f5;
+}
+
+.text-field:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+/* =====================================================
+   Buttons
+   ===================================================== */
+.button {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-padding: 10px 24px;
+    -fx-pref-height: 40px;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+
+.button:hover {
+    -fx-background-color: #333333;
+}
+
+.button:pressed {
+    -fx-background-color: #000000;
+    -fx-translate-y: 1px;
+}
+
+/* Checkout — outlined style */
+.button:contains("Checkout") {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1a1a1a;
+    -fx-border-color: #1a1a1a;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 4px;
+}
+.button:contains("Checkout"):hover {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: #ffffff;
+}
+.button:contains("Checkout"):pressed {
+    -fx-background-color: #333333;
+    -fx-text-fill: #ffffff;
+}
+
+/* Return — outlined style */
+.button:contains("Return") {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1a1a1a;
+    -fx-border-color: #1a1a1a;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 4px;
+}
+.button:contains("Return"):hover {
+    -fx-background-color: #1a1a1a;
+    -fx-text-fill: #ffffff;
+}
+.button:contains("Return"):pressed {
+    -fx-background-color: #333333;
+    -fx-text-fill: #ffffff;
+}
+
+/* Delete — subtle red */
+#deleteButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c0392b;
+    -fx-border-color: #c0392b;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 4px;
+    -fx-effect: none;
+}
+#deleteButton:hover {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: #ffffff;
+    -fx-effect: none;
+}
+#deleteButton:pressed {
+    -fx-background-color: #922b21;
+    -fx-text-fill: #ffffff;
+    -fx-translate-y: 1px;
+}
+
+/* =====================================================
+   Table View
+   ===================================================== */
+.table-view {
+    -fx-background-color: #fafafa;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-effect: none;
+}
+
+.table-view:focused {
+    -fx-background-insets: 0;
+}
+
+/* Header */
+.table-view .column-header-background {
+    -fx-background-color: #fafafa;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1.5 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 46px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 11px;
+    -fx-font-weight: normal;
+    -fx-padding: 0 12px;
+    -fx-alignment: CENTER-LEFT;
+    -fx-text-transform: uppercase;
+}
+
+.table-view .filler {
+    -fx-background-color: #fafafa;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1.5 0;
+}
+
+/* Rows */
+.table-row-cell {
+    -fx-background-insets: 0;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 44px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #fafafa;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #ffffff;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #1a1a1a;
+}
+
+.table-row-cell:selected:hover {
+    -fx-background-color: #333333;
+}
+
+/* Cells */
+.table-cell {
+    -fx-text-fill: #1a1a1a;
+    -fx-padding: 0 12px;
+    -fx-alignment: CENTER-LEFT;
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: #ffffff;
+}
+
+/* Empty table */
+.table-view .placeholder > .label {
+    -fx-text-fill: #b0b0b0;
+    -fx-font-style: italic;
+}
+
+/* Scrollbar */
+.table-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #d0d0d0;
+    -fx-background-radius: 3px;
+}
+
+.table-view .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #aaaaaa;
+}
+
+.table-view .scroll-bar .increment-button,
+.table-view .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+}
+
+.table-view .scroll-bar .increment-arrow,
+.table-view .scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-pref-height: 0;
+    -fx-pref-width: 0;
+}
+
+.table-view .corner {
+    -fx-background-color: #fafafa;
+}

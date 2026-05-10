@@ -153,7 +153,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.libaryproject/org.example.libaryproject.HelloApplication</mainClass>
+                            <mainClass>org.example.libaryproject/org.example.libaryproject.main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

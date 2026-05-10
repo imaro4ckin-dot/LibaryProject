@@ -26,7 +26,7 @@ public class HistoryController {
     @FXML private Label                                countLabel;
 
     private final ObservableList<CheckoutRecord> allRecords = FXCollections.observableArrayList();
-    private final DatabaseManager db = new DatabaseManager();
+    private final ApiClient db = new ApiClient();
 
     @FXML
     public void initialize() {

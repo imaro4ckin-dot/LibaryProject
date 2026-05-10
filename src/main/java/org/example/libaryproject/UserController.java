@@ -50,7 +50,7 @@ public class UserController {
     private final ObservableList<Book> myBooks        = FXCollections.observableArrayList();
     private FilteredList<Book> filteredAvailable;
 
-    private final DatabaseManager db = new DatabaseManager();
+    private final ApiClient db = new ApiClient();
     private User currentUser;
     private Set<Integer> myCheckoutIds = new HashSet<>();
 

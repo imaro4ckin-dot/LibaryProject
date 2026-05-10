@@ -21,7 +21,7 @@ public class ForgotPasswordController {
     @FXML private PasswordField confirmField;
     @FXML private Label         messageLabel;
 
-    private final DatabaseManager db = new DatabaseManager();
+    private final ApiClient db = new ApiClient();
 
     @FXML
     public void handleLookup() {

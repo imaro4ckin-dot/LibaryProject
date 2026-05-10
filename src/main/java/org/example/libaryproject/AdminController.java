@@ -48,7 +48,7 @@ public class AdminController {
 
     private final ObservableList<Book> allBooks = FXCollections.observableArrayList();
     private FilteredList<Book> filteredBooks;
-    private final DatabaseManager db = new DatabaseManager();
+    private final ApiClient db = new ApiClient();
     private User currentUser;
     private Map<Integer, String> activeCheckouts;
 

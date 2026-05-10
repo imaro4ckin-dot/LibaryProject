@@ -12,7 +12,7 @@ public class ChangePasswordController {
     @FXML private PasswordField confirmPasswordField;
     @FXML private Label         errorLabel;
 
-    private final DatabaseManager db = new DatabaseManager();
+    private final ApiClient db = new ApiClient();
     private User currentUser;
 
     public void setUser(User user) {
@@ -29,10 +29,6 @@ public class ChangePasswordController {
             errorLabel.setText("All fields are required.");
             return;
         }
-        if (!db.verifyPassword(currentUser.getId(), current)) {
-            errorLabel.setText("Current password is incorrect.");
-            return;
-        }
         if (!newPw.equals(confirm)) {
             errorLabel.setText("New passwords do not match.");
             return;
@@ -42,7 +38,11 @@ public class ChangePasswordController {
             return;
         }
 
-        db.changePassword(currentUser.getId(), newPw);
+        boolean ok = db.changePassword(currentUser.getId(), current, newPw);
+        if (!ok) {
+            errorLabel.setText("Current password is incorrect.");
+            return;
+        }
         ((Stage) currentPasswordField.getScene().getWindow()).close();
     }
 }

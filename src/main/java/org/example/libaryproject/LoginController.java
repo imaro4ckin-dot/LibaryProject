@@ -15,7 +15,7 @@ public class LoginController {
     @FXML private PasswordField passwordField;
     @FXML private Label         messageLabel;
 
-    private final DatabaseManager db = new DatabaseManager();
+    private final ApiClient db = new ApiClient();
 
     @FXML
     public void initialize() {

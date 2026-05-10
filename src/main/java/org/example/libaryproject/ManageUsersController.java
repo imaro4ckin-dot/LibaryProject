@@ -41,7 +41,7 @@ public class ManageUsersController {
 
     private final ObservableList<User> userList      = FXCollections.observableArrayList();
     private final ObservableList<Book> userBooksList = FXCollections.observableArrayList();
-    private final DatabaseManager db = new DatabaseManager();
+    private final ApiClient db = new ApiClient();
     private User currentAdmin;
 
     public void setCurrentAdmin(User admin) {

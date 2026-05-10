@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.libaryproject.LibraryController">
+    <top>
+        <HBox spacing="10" alignment="CENTER">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <TextField fx:id="titleInput" promptText="Book Title"/>
+            <TextField fx:id="authorInput" promptText="Author"/>
+            <Button text="Add Book" onAction="#handleAddBook"/>
+        </HBox>
+    </top>
+
+    <center>
+        <TableView fx:id="bookTable">
+            <columns>
+                <TableColumn fx:id="titleColumn" text="Title" prefWidth="200"/>
+                <TableColumn fx:id="authorColumn" text="Author" prefWidth="150"/>
+                <TableColumn fx:id="statusColumn" text="Available?" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

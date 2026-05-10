@@ -7,32 +7,52 @@
             fx:controller="org.example.libaryproject.AdminController"
             stylesheets="@styles.css">
     <top>
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
-            <TextField fx:id="titleInput" promptText="Book Title"/>
-            <TextField fx:id="authorInput" promptText="Author"/>
-            <Button text="Add Book" onAction="#handleAddBook"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label text="Admin" styleClass="role-badge"/>
-            <Button text="Logout" onAction="#handleLogout" styleClass="logout-button"/>
-        </HBox>
+        <VBox>
+            <!-- Row 1: add book + search + actions -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <padding><Insets top="12" right="16" bottom="8" left="16"/></padding>
+                <TextField fx:id="titleInput"  promptText="Book Title"/>
+                <TextField fx:id="authorInput" promptText="Author"/>
+                <Button text="Add Book" onAction="#handleAddBook"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField" promptText="Search..." prefWidth="160"/>
+                <Label fx:id="userLabel" styleClass="role-badge"/>
+                <Button text="History"      onAction="#handleHistory"     styleClass="logout-button"/>
+                <Button text="Manage Users" onAction="#handleManageUsers" styleClass="logout-button"/>
+                <Button text="Logout"       onAction="#handleLogout"      styleClass="logout-button"/>
+            </HBox>
+            <!-- Row 2: edit selected book -->
+            <HBox fx:id="editBar" spacing="10" alignment="CENTER_LEFT" visible="false" managed="false">
+                <padding><Insets top="0" right="16" bottom="10" left="16"/></padding>
+                <Label text="Edit:" style="-fx-text-fill:#888; -fx-font-size:12px;"/>
+                <TextField fx:id="editTitleField"  promptText="Title"  prefWidth="180"/>
+                <TextField fx:id="editAuthorField" promptText="Author" prefWidth="150"/>
+                <Button text="Save Changes" onAction="#handleEditSave"/>
+                <Button text="Cancel"       onAction="#handleEditCancel" styleClass="logout-button"/>
+            </HBox>
+        </VBox>
     </top>
 
     <center>
         <TableView fx:id="bookTable">
             <columns>
-                <TableColumn fx:id="titleColumn"  text="Title"      prefWidth="200"/>
-                <TableColumn fx:id="authorColumn" text="Author"     prefWidth="150"/>
-                <TableColumn fx:id="statusColumn" text="Available?" prefWidth="100"/>
+                <TableColumn fx:id="titleColumn"      text="Title"          prefWidth="160"/>
+                <TableColumn fx:id="authorColumn"     text="Author"         prefWidth="130"/>
+                <TableColumn fx:id="statusColumn"     text="Status"         prefWidth="90"/>
+                <TableColumn fx:id="dueDateColumn"    text="Due Date"       prefWidth="90"/>
+                <TableColumn fx:id="checkedOutColumn" text="Checked Out By" prefWidth="120"/>
             </columns>
         </TableView>
     </center>
 
     <bottom>
-        <HBox spacing="12" alignment="CENTER">
+        <HBox spacing="12" alignment="CENTER_LEFT">
             <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
             <Button text="Checkout Book" onAction="#handleCheckout"/>
             <Button text="Return Book"   onAction="#handleReturn"/>
+            <Button text="Edit Book"     onAction="#handleEditStart" styleClass="logout-button"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Export Books CSV" onAction="#handleExportBooks" styleClass="logout-button"/>
             <Button id="deleteButton" text="Delete Book" onAction="#handleDelete"/>
         </HBox>
     </bottom>

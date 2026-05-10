@@ -312,3 +312,69 @@
     -fx-text-fill: #1a1a1a;
     -fx-border-color: #aaaaaa;
 }
+
+/* =====================================================
+   Tab Pane
+   ===================================================== */
+.tab-pane {
+    -fx-background-color: #fafafa;
+    -fx-tab-min-height: 38px;
+}
+
+/* The strip that holds the tabs */
+.tab-pane .tab-header-area {
+    -fx-padding: 0 0 0 0;
+    -fx-background-color: #fafafa;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #fafafa;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1.5 0;
+}
+
+/* Individual tab */
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 8px 20px;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #888888;
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+}
+
+.tab-pane .tab:hover .tab-label {
+    -fx-text-fill: #1a1a1a;
+}
+
+/* Selected tab: bottom border accent, black text */
+.tab-pane .tab:selected {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #1a1a1a transparent;
+    -fx-border-width: 0 0 2.5 0;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-weight: bold;
+}
+
+/* Hide the close button entirely */
+.tab-pane .tab .tab-close-button {
+    -fx-background-color: transparent;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+/* Content area */
+.tab-pane .tab-content-area {
+    -fx-background-color: #fafafa;
+    -fx-padding: 0;
+}

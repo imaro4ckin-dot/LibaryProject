@@ -11,19 +11,39 @@
             <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
             <Label text="Library" styleClass="screen-title"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label text="User" styleClass="role-badge"/>
-            <Button text="Logout" onAction="#handleLogout" styleClass="logout-button"/>
+            <TextField fx:id="searchField" promptText="Search..." prefWidth="160"/>
+            <Label fx:id="userLabel" styleClass="role-badge"/>
+            <Button text="Change Password" onAction="#handleChangePassword" styleClass="logout-button"/>
+            <Button text="Logout"          onAction="#handleLogout"         styleClass="logout-button"/>
         </HBox>
     </top>
 
     <center>
-        <TableView fx:id="bookTable">
-            <columns>
-                <TableColumn fx:id="titleColumn"  text="Title"      prefWidth="200"/>
-                <TableColumn fx:id="authorColumn" text="Author"     prefWidth="150"/>
-                <TableColumn fx:id="statusColumn" text="Available?" prefWidth="100"/>
-            </columns>
-        </TableView>
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+
+            <!-- Tab 1: Available books to browse and check out -->
+            <Tab text="Available Books">
+                <TableView fx:id="availableTable">
+                    <columns>
+                        <TableColumn fx:id="availTitleColumn"  text="Title"  prefWidth="280"/>
+                        <TableColumn fx:id="availAuthorColumn" text="Author" prefWidth="200"/>
+                    </columns>
+                </TableView>
+            </Tab>
+
+            <!-- Tab 2: Books this user has checked out -->
+            <Tab text="My Books">
+                <TableView fx:id="myBooksTable">
+                    <columns>
+                        <TableColumn fx:id="myTitleColumn"   text="Title"    prefWidth="230"/>
+                        <TableColumn fx:id="myAuthorColumn"  text="Author"   prefWidth="160"/>
+                        <TableColumn fx:id="myDueDateColumn" text="Due Date" prefWidth="100"/>
+                        <TableColumn fx:id="myStatusColumn"  text="Status"   prefWidth="90"/>
+                    </columns>
+                </TableView>
+            </Tab>
+
+        </TabPane>
     </center>
 
     <bottom>

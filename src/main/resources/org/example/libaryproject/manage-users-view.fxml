@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.libaryproject.ManageUsersController"
+            stylesheets="@styles.css"
+            prefWidth="580" prefHeight="540">
+
+    <top>
+        <HBox alignment="CENTER_LEFT">
+            <padding><Insets top="14" right="16" bottom="14" left="16"/></padding>
+            <Label text="Manage Users" styleClass="screen-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane orientation="VERTICAL" dividerPositions="0.52">
+            <!-- Top: all users -->
+            <TableView fx:id="userTable">
+                <columns>
+                    <TableColumn fx:id="usernameColumn" text="Username" prefWidth="220"/>
+                    <TableColumn fx:id="roleColumn"     text="Role"     prefWidth="100"/>
+                </columns>
+            </TableView>
+
+            <!-- Bottom: books currently held by selected user -->
+            <VBox spacing="0">
+                <Label fx:id="detailLabel" text="Select a user to see their books"
+                       style="-fx-text-fill:#888; -fx-font-size:12px; -fx-padding:8 12 6 12;"/>
+                <TableView fx:id="userBooksTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="bookTitleColumn" text="Book Title" prefWidth="220"/>
+                        <TableColumn fx:id="bookDueColumn"   text="Due Date"   prefWidth="120"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <VBox spacing="8">
+            <padding><Insets top="12" right="16" bottom="14" left="16"/></padding>
+            <Label fx:id="errorLabel" styleClass="login-error" text="" wrapText="true"/>
+            <!-- Row 1: credentials + role -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField    fx:id="newUsername" promptText="Username"  prefWidth="120"/>
+                <PasswordField fx:id="newPassword" promptText="Password" prefWidth="120"/>
+                <ChoiceBox    fx:id="roleChoice"   prefWidth="85"/>
+            </HBox>
+            <!-- Row 2: security question -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <ChoiceBox fx:id="questionChoice" prefWidth="270"/>
+                <TextField fx:id="securityAnswer" promptText="Answer"   prefWidth="160"/>
+            </HBox>
+            <!-- Row 3: action buttons -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Add User"    onAction="#handleAddUser"/>
+                <Button text="Delete User" onAction="#handleDeleteUser" id="deleteButton"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

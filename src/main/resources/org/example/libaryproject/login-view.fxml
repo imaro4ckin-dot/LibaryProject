@@ -9,7 +9,7 @@
       alignment="CENTER"
       spacing="16"
       prefWidth="360"
-      prefHeight="340">
+      prefHeight="360">
 
     <padding><Insets top="48" right="48" bottom="48" left="48"/></padding>
 
@@ -17,12 +17,15 @@
     <Label text="Sign in to continue" styleClass="login-subtitle"/>
 
     <VBox spacing="10" style="-fx-padding: 16 0 0 0;">
-        <TextField fx:id="usernameField" promptText="Username"/>
+        <TextField    fx:id="usernameField" promptText="Username"/>
         <PasswordField fx:id="passwordField" promptText="Password"/>
     </VBox>
 
-    <Label fx:id="errorLabel" styleClass="login-error" text="" wrapText="true"/>
+    <Label fx:id="messageLabel" styleClass="login-error" text="" wrapText="true"/>
 
     <Button text="Sign In" onAction="#handleLogin" maxWidth="Infinity" styleClass="login-button"/>
+
+    <Button text="Forgot password?" onAction="#handleForgotPassword"
+            style="-fx-background-color:transparent; -fx-text-fill:#888; -fx-cursor:hand; -fx-underline:true; -fx-padding:0; -fx-font-size:12px;"/>
 
 </VBox>

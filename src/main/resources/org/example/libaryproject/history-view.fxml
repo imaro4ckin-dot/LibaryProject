@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.libaryproject.HistoryController"
+            stylesheets="@styles.css"
+            prefWidth="700" prefHeight="480">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <padding><Insets top="14" right="16" bottom="14" left="16"/></padding>
+            <Label text="Checkout History" styleClass="screen-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="searchField" promptText="Search..." prefWidth="180"/>
+            <Button text="Export CSV" onAction="#handleExport" styleClass="logout-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <TableView fx:id="historyTable">
+            <columns>
+                <TableColumn fx:id="bookTitleColumn"    text="Book"           prefWidth="180"/>
+                <TableColumn fx:id="usernameColumn"     text="User"           prefWidth="110"/>
+                <TableColumn fx:id="checkedOutAtColumn" text="Checked Out"    prefWidth="130"/>
+                <TableColumn fx:id="dueDateColumn"      text="Due Date"       prefWidth="100"/>
+                <TableColumn fx:id="returnedAtColumn"   text="Returned"       prefWidth="130"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT">
+            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+            <Label fx:id="countLabel" styleClass="login-subtitle"/>
+        </HBox>
+    </bottom>
+</BorderPane>

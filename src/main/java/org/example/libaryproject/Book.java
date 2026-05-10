@@ -5,6 +5,7 @@ public class Book {
     private String title;
     private String author;
     private boolean isAvaliable;
+    private String dueDate; // null if available, ISO date string if checked out
 
     public Book(int id, String title, String author, boolean isAvaliable) {
         this.id = id;
@@ -17,16 +18,19 @@ public class Book {
         this(-1, title, author, true);
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId()              { return id; }
+    public void setId(int id)       { this.id = id; }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getTitle()                { return title; }
+    public void setTitle(String title)      { this.title = title; }
 
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
+    public String getAuthor()               { return author; }
+    public void setAuthor(String author)    { this.author = author; }
 
-    public boolean isAvaliable() { return isAvaliable; }
-    public boolean getAvailable() { return isAvaliable; }
-    public void setAvaliable(boolean avaliable) { this.isAvaliable = avaliable; }
+    public boolean isAvaliable()            { return isAvaliable; }
+    public boolean getAvailable()           { return isAvaliable; }
+    public void setAvaliable(boolean a)     { this.isAvaliable = a; }
+
+    public String getDueDate()              { return dueDate; }
+    public void setDueDate(String dueDate)  { this.dueDate = dueDate; }
 }
